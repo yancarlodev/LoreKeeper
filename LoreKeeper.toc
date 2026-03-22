@@ -1,6 +1,6 @@
 ## Interface: 11200
-## Title: LoreKeeper
-## Notes: Save and share with other players text items such as books, journals and inscriptions found throughout the world.
+## Title: Lore Keeper
+## Notes: Transcribe and share with other players text items such as books, journals and inscriptions found throughout the world.
 ## Author: yancarlodev
 ## Version: 0.0.1
 ## SavedVariablesPerCharacter: ReadBook
