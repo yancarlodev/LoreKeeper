@@ -1,8 +1,0 @@
-## Interface: 11200
-## Title: Lore Keeper
-## Notes: Transcribe and share with other players text items such as books, journals and inscriptions found throughout the world.
-## Author: yancarlodev
-## Version: 0.0.1
-## SavedVariablesPerCharacter: ReadBook
-
-LoreKeeper.lua
