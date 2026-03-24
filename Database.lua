@@ -1,0 +1,1 @@
+LoreKeeperDatabase = LoreKeeperDatabase or {}
