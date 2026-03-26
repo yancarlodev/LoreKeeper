@@ -12,46 +12,46 @@ BOOKTYPE_SPELL = "spell";
 SPELLBOOK_PAGENUMBERS = {};
  
 function ToggleSpellBook(bookType)
-  local isVisible = SpellBookFrame:IsVisible();
-  HideUIPanel(SpellBookFrame);
-  if ( (not isVisible or (SpellBookFrame.bookType ~= bookType)) ) then
-    SpellBookFrame.bookType = bookType;
-    ShowUIPanel(SpellBookFrame);
+  local isVisible = LoreBookFrame:IsVisible();
+  HideUIPanel(LoreBookFrame);
+  if ( (not isVisible or (LoreBookFrame.bookType ~= bookType)) ) then
+    LoreBookFrame.bookType = bookType;
+    ShowUIPanel(LoreBookFrame);
   end
   local currentPage, maxPages = SpellBook_GetCurrentPage();
   if ( currentPage > maxPages ) then
-    SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] = maxPages;
+    SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine] = maxPages;
     currentPage = maxPages;
     UpdateSpells();
     if ( currentPage == 1 ) then
-      SpellBookPrevPageButton:Disable();
+      LoreBookPrevPageButton:Disable();
     else
-      SpellBookPrevPageButton:Enable();
+      LoreBookPrevPageButton:Enable();
     end
     if ( currentPage == maxPages ) then
-      SpellBookNextPageButton:Disable();
+      LoreBookNextPageButton:Disable();
     else
-      SpellBookNextPageButton:Enable();
+      LoreBookNextPageButton:Enable();
     end
   end
   if ( currentPage == 1 ) then
-    SpellBookPrevPageButton:Disable();
+    LoreBookPrevPageButton:Disable();
   else
-    SpellBookPrevPageButton:Enable();
+    LoreBookPrevPageButton:Enable();
   end
   if ( currentPage == maxPages ) then
-    SpellBookNextPageButton:Disable();
+    LoreBookNextPageButton:Disable();
   else
-    SpellBookNextPageButton:Enable();
+    LoreBookNextPageButton:Enable();
   end
-  SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
+  LoreBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
 end
  
 function LoreBookFrame_OnLoad()
   this:RegisterEvent("SPELLS_CHANGED");
   this:RegisterEvent("LEARNED_SPELL_IN_TAB");
  
-  SpellBookFrame.bookType = BOOKTYPE_SPELL;
+  LoreBookFrame.bookType = BOOKTYPE_SPELL;
   -- Init page nums
   SPELLBOOK_PAGENUMBERS[1] = 1;
   SPELLBOOK_PAGENUMBERS[2] = 1;
@@ -66,12 +66,12 @@ function LoreBookFrame_OnLoad()
   SpellBookSkillLineTab_OnClick(1);
  
   -- Initialize tab flashing
-  SpellBookFrame.flashTabs = nil;
+  LoreBookFrame.flashTabs = nil;
 end
  
 function LoreBookFrame_OnEvent()
   if ( event == "SPELLS_CHANGED" ) then
-    if ( SpellBookFrame:IsVisible() ) then
+    if ( LoreBookFrame:IsVisible() ) then
       SpellBookFrame_Update();
       SpellBook_UpdatePageArrows();
     end
@@ -79,7 +79,7 @@ function LoreBookFrame_OnEvent()
     local flashFrame = getglobal("SpellBookSkillLineTab"..arg1.."Flash");
       if ( flashFrame ) then
         flashFrame:Show();
-        SpellBookFrame.flashTabs = 1;
+        LoreBookFrame.flashTabs = 1;
       end
   end
 end
@@ -89,7 +89,7 @@ function LoreBookFrame_OnShow()
   SpellBookFrame_Update(1);
   
   -- If there are tabs waiting to flash, then flash them... yeah..
-  if ( SpellBookFrame.flashTabs ) then
+  if ( LoreBookFrame.flashTabs ) then
     UIFrameFlash(SpellBookTabFlashFrame, 0.5, 0.5, 30, nil);
   end
  
@@ -105,7 +105,7 @@ function SpellBookFrame_Update(showing)
   
   -- Setup skillline tabs
   if ( showing ) then
-    SpellBookSkillLineTab_OnClick(SpellBookFrame.selectedSkillLine);
+    SpellBookSkillLineTab_OnClick(LoreBookFrame.selectedSkillLine);
     UpdateSpells();
   end
  
@@ -114,14 +114,14 @@ function SpellBookFrame_Update(showing)
   local skillLineTab;
   for i=1, MAX_SKILLLINE_TABS do
     skillLineTab = getglobal("SpellBookSkillLineTab"..i);
-    if ( i <= numSkillLineTabs and SpellBookFrame.bookType == BOOKTYPE_SPELL ) then
+    if ( i <= numSkillLineTabs and LoreBookFrame.bookType == BOOKTYPE_SPELL ) then
       name, texture = GetSpellTabInfo(i);
       skillLineTab:SetNormalTexture(texture);
       skillLineTab.tooltip = name;
       skillLineTab:Show();
  
       -- Set the selected tab
-      if ( SpellBookFrame.selectedSkillLine == i ) then
+      if ( LoreBookFrame.selectedSkillLine == i ) then
         skillLineTab:SetChecked(1);
       else
         skillLineTab:SetChecked(nil);
@@ -131,7 +131,7 @@ function SpellBookFrame_Update(showing)
     end
   end
 
-  SpellBookTitleText:SetText(TEXT(SPELLBOOK));
+  LoreBookTitleText:SetText(TEXT(SPELLBOOK));
   if ( showing ) then
     PlaySound("igSpellBookOpen");
   end
@@ -142,7 +142,7 @@ function SpellBookFrame_SetTabType(tabButton, bookType, token)
   tabButton:SetText(TEXT(SPELLBOOK));
   tabButton.binding = "TOGGLESPELLBOOK";
 
-  if ( SpellBookFrame.bookType == bookType ) then
+  if ( LoreBookFrame.bookType == bookType ) then
     tabButton:Disable();
   else
     tabButton:Enable();
@@ -194,7 +194,7 @@ end
 function SpellButton_OnEnter()
   local id = SpellBook_GetSpellID(this:GetID());
   GameTooltip:SetOwner(this, "ANCHOR_RIGHT");
-  if ( GameTooltip:SetSpell(id, SpellBookFrame.bookType) ) then
+  if ( GameTooltip:SetSpell(id, LoreBookFrame.bookType) ) then
     this.updateTooltip = TOOLTIP_UPDATE_TIME;
   else
     this.updateTooltip = nil;
@@ -225,11 +225,11 @@ function SpellButton_OnClick(drag)
   end
   this:SetChecked("false");
   if ( drag ) then
-    PickupSpell(id, SpellBookFrame.bookType);
+    PickupSpell(id, LoreBookFrame.bookType);
   elseif ( IsShiftKeyDown() ) then
     if ( MacroFrame and MacroFrame:IsVisible() ) then
-      local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType);
-      if ( spellName and not IsSpellPassive(id, SpellBookFrame.bookType) ) then
+      local spellName, subSpellName = GetSpellName(id, LoreBookFrame.bookType);
+      if ( spellName and not IsSpellPassive(id, LoreBookFrame.bookType) ) then
         if ( subSpellName and (strlen(subSpellName) > 0) ) then
           MacroFrame_AddMacroLine(TEXT(SLASH_CAST1).." "..spellName.."("..subSpellName..")");
         else
@@ -237,23 +237,23 @@ function SpellButton_OnClick(drag)
         end
       end
     else
-      PickupSpell(id, SpellBookFrame.bookType );
+      PickupSpell(id, LoreBookFrame.bookType );
     end
   else
-    CastSpell(id, SpellBookFrame.bookType);
+    CastSpell(id, LoreBookFrame.bookType);
     SpellButton_UpdateSelection();
   end
 end
  
 function SpellButton_UpdateSelection()
-  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  local _, _, offset, numSpells = GetSpellTabInfo(LoreBookFrame.selectedSkillLine);
   local id = SpellBook_GetSpellID(this:GetID());
   if ( (id > (offset + numSpells)) ) then
     this:SetChecked("false");
     return;
   end
  
-  if ( IsCurrentCast(id,  SpellBookFrame.bookType) ) then
+  if ( IsCurrentCast(id,  LoreBookFrame.bookType) ) then
     this:SetChecked("true");
   else
     this:SetChecked("false");
@@ -268,11 +268,11 @@ function SpellButton_UpdateButton()
     SpellButton_OnEnter();
   end
  
-  if ( not SpellBookFrame.selectedSkillLine ) then
-    SpellBookFrame.selectedSkillLine = 1;
+  if ( not LoreBookFrame.selectedSkillLine ) then
+    LoreBookFrame.selectedSkillLine = 1;
   end
-  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
-  SpellBookFrame.selectedSkillLineOffset = offset;
+  local _, _, offset, numSpells = GetSpellTabInfo(LoreBookFrame.selectedSkillLine);
+  LoreBookFrame.selectedSkillLineOffset = offset;
   local id = SpellBook_GetSpellID(this:GetID());
   local name = this:GetName();
   local iconTexture = getglobal(name.."IconTexture");
@@ -295,7 +295,7 @@ function SpellButton_UpdateButton()
   else
     this:Enable();
   end
-  local texture = GetSpellTexture(id, SpellBookFrame.bookType);
+  local texture = GetSpellTexture(id, LoreBookFrame.bookType);
   local highlightTexture = getglobal(name.."Highlight");
   local normalTexture = getglobal(name.."NormalTexture");
   -- If no spell, hide everything and return
@@ -312,7 +312,7 @@ function SpellButton_UpdateButton()
     return;
   end
   
-  local start, duration, enable = GetSpellCooldown(id, SpellBookFrame.bookType);
+  local start, duration, enable = GetSpellCooldown(id, LoreBookFrame.bookType);
   CooldownFrame_SetTimer(cooldown, start, duration, enable);
   if ( enable == 1 ) then
     iconTexture:SetVertexColor(1.0, 1.0, 1.0);
@@ -320,7 +320,7 @@ function SpellButton_UpdateButton()
     iconTexture:SetVertexColor(0.4, 0.4, 0.4);
   end
  
-  local autoCastAllowed, autoCastEnabled = GetSpellAutocast(id, SpellBookFrame.bookType);
+  local autoCastAllowed, autoCastEnabled = GetSpellAutocast(id, LoreBookFrame.bookType);
   if ( autoCastAllowed ) then
     autoCastableTexture:Show();
   else
@@ -332,8 +332,8 @@ function SpellButton_UpdateButton()
     autoCastModel:Hide();
   end
  
-  local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType);
-  local isPassive = IsSpellPassive(id, SpellBookFrame.bookType);
+  local spellName, subSpellName = GetSpellName(id, LoreBookFrame.bookType);
+  local isPassive = IsSpellPassive(id, LoreBookFrame.bookType);
   if ( isPassive ) then
     normalTexture:SetVertexColor(0, 0, 0);
     highlightTexture:SetTexture("Interface\\Buttons\\UI-PassiveHighlight");
@@ -361,9 +361,9 @@ end
  
 function PrevPageButton_OnClick()
   local pageNum = SpellBook_GetCurrentPage() - 1;
-  SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] = pageNum;
+  SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine] = pageNum;
   SpellBook_UpdatePageArrows();
-  SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
+  LoreBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
   UpdateSpells();
 
   PlaySound("igAbiliityPageTurn");
@@ -371,9 +371,9 @@ end
  
 function NextPageButton_OnClick()
   local pageNum = SpellBook_GetCurrentPage() + 1;
-  SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] = pageNum;
+  SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine] = pageNum;
   SpellBook_UpdatePageArrows();
-  SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
+  LoreBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
   UpdateSpells();
 
   PlaySound("igAbiliityPageTurn");
@@ -385,13 +385,13 @@ function SpellBookSkillLineTab_OnClick(id)
     update = 1;
     id = this:GetID();
   end
-  SpellBookFrame.selectedSkillLine = id;
-  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
-  SpellBookFrame.selectedSkillLineOffset = offset;
-  SpellBookFrame.selectedSkillLineNumSpells = numSpells;
+  LoreBookFrame.selectedSkillLine = id;
+  local _, _, offset, numSpells = GetSpellTabInfo(LoreBookFrame.selectedSkillLine);
+  LoreBookFrame.selectedSkillLineOffset = offset;
+  LoreBookFrame.selectedSkillLineNumSpells = numSpells;
   SpellBook_UpdatePageArrows();
   SpellBookFrame_Update();
-  SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), SpellBook_GetCurrentPage()));
+  LoreBookPageText:SetText(format(TEXT(PAGE_NUMBER), SpellBook_GetCurrentPage()));
   if ( update ) then
     UpdateSpells();
   end
@@ -403,28 +403,28 @@ function SpellBookSkillLineTab_OnClick(id)
 end
  
 function SpellBook_GetSpellID(id)
-  return id + SpellBookFrame.selectedSkillLineOffset + ( SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] - 1));
+  return id + LoreBookFrame.selectedSkillLineOffset + ( SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine] - 1));
 end
  
 function SpellBook_UpdatePageArrows()
   local currentPage, maxPages = SpellBook_GetCurrentPage();
   if ( currentPage== 1 ) then
-    SpellBookPrevPageButton:Disable();
+    LoreBookPrevPageButton:Disable();
   else
-    SpellBookPrevPageButton:Enable();
+    LoreBookPrevPageButton:Enable();
   end
   if ( currentPage == maxPages ) then
-    SpellBookNextPageButton:Disable();
+    LoreBookNextPageButton:Disable();
   else
-    SpellBookNextPageButton:Enable();
+    LoreBookNextPageButton:Enable();
   end
 end
  
 function SpellBook_GetCurrentPage()
   local currentPage, maxPages;
 
-  currentPage = SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine];
-  local _, _, _, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  currentPage = SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine];
+  local _, _, _, numSpells = GetSpellTabInfo(LoreBookFrame.selectedSkillLine);
   maxPages = ceil(numSpells/SPELLS_PER_PAGE);
 
   return currentPage, maxPages;

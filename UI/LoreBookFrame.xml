@@ -63,7 +63,7 @@
             <Anchor point="BOTTOMRIGHT"/>
           </Anchors>
         </Texture>
-        <FontString name="SpellBookTitleText" inherits="GameFontNormal" text="Lorebook">
+        <FontString name="LoreBookTitleText" inherits="GameFontNormal" text="Lorebook">
           <Anchors>
             <Anchor point="CENTER">
               <Offset>
@@ -72,7 +72,7 @@
             </Anchor>
           </Anchors>
         </FontString>
-        <FontString name="SpellBookPageText" inherits="GameFontNormal">
+        <FontString name="LoreBookPageText" inherits="GameFontNormal">
           <Size>
             <AbsDimension x="102" y="0"/>
           </Size>
@@ -87,12 +87,12 @@
       </Layer>
     </Layers>
     <Frames>
-      <Button name="SpellBookPrevPageButton">
+      <Button name="LoreBookPrevPageButton">
         <Size>
           <AbsDimension x="32" y="32"/>
         </Size>
         <Anchors>
-          <Anchor point="CENTER" relativeTo="SpellBookFrame" relativePoint="BOTTOMLEFT">
+          <Anchor point="CENTER" relativeTo="LoreBookFrame" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="50" y="105"/>
             </Offset>
@@ -102,7 +102,7 @@
           <Layer level="BACKGROUND">
             <FontString inherits="GameFontNormal" justifyH="LEFT" text="PREV">
               <Anchors>
-                <Anchor point="LEFT" relativeTo="SpellBookPrevPageButton" relativePoint="RIGHT"/>
+                <Anchor point="LEFT" relativeTo="LoreBookPrevPageButton" relativePoint="RIGHT"/>
               </Anchors>
             </FontString>
           </Layer>
@@ -117,12 +117,12 @@
         <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
         <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
       </Button>
-      <Button name="SpellBookNextPageButton">
+      <Button name="LoreBookNextPageButton">
         <Size>
           <AbsDimension x="32" y="32"/>
         </Size>
         <Anchors>
-          <Anchor point="CENTER" relativeTo="SpellBookFrame" relativePoint="BOTTOMLEFT">
+          <Anchor point="CENTER" relativeTo="LoreBookFrame" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="314" y="105"/>
             </Offset>
@@ -132,7 +132,7 @@
           <Layer level="BACKGROUND">
             <FontString inherits="GameFontNormal" justifyH="RIGHT" text="NEXT">
               <Anchors>
-                <Anchor point="RIGHT" relativeTo="SpellBookNextPageButton" relativePoint="LEFT"/>
+                <Anchor point="RIGHT" relativeTo="LoreBookNextPageButton" relativePoint="LEFT"/>
               </Anchors>
             </FontString>
           </Layer>
@@ -147,16 +147,16 @@
         <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
         <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
       </Button>
-      <Button name="SpellBookCloseButton" inherits="UIPanelCloseButton">
+      <Button name="LoreBookCloseButton" inherits="UIPanelCloseButton">
         <Anchors>
-          <Anchor point="CENTER" relativeTo="SpellBookFrame" relativePoint="TOPRIGHT">
+          <Anchor point="CENTER" relativeTo="LoreBookFrame" relativePoint="TOPRIGHT">
             <Offset>
               <AbsDimension x="-44" y="-25"/>
             </Offset>
           </Anchor>
         </Anchors>
       </Button>
-      <CheckButton name="SpellButton1" inherits="SpellButtonTemplate" id="1">
+      <CheckButton name="LoreButton1" inherits="SpellButtonTemplate" id="1">
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
@@ -165,99 +165,99 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton2" inherits="SpellButtonTemplate" id="7">
+      <CheckButton name="LoreButton2" inherits="SpellButtonTemplate" id="7">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton1">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton1">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton3" inherits="SpellButtonTemplate" id="2">
+      <CheckButton name="LoreButton3" inherits="SpellButtonTemplate" id="2">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton1" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton1" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="0" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton4" inherits="SpellButtonTemplate" id="8">
+      <CheckButton name="LoreButton4" inherits="SpellButtonTemplate" id="8">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton3">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton3">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton5" inherits="SpellButtonTemplate" id="3">
+      <CheckButton name="LoreButton5" inherits="SpellButtonTemplate" id="3">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton3" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton3" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="0" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton6" inherits="SpellButtonTemplate" id="9">
+      <CheckButton name="LoreButton6" inherits="SpellButtonTemplate" id="9">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton5">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton5">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton7" inherits="SpellButtonTemplate" id="4">
+      <CheckButton name="LoreButton7" inherits="SpellButtonTemplate" id="4">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton5" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton5" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="0" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton8" inherits="SpellButtonTemplate" id="10">
+      <CheckButton name="LoreButton8" inherits="SpellButtonTemplate" id="10">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton7">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton7">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton9" inherits="SpellButtonTemplate" id="5">
+      <CheckButton name="LoreButton9" inherits="SpellButtonTemplate" id="5">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton7" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton7" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="0" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton10" inherits="SpellButtonTemplate" id="11">
+      <CheckButton name="LoreButton10" inherits="SpellButtonTemplate" id="11">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton9">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton9">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton11" inherits="SpellButtonTemplate" id="6">
+      <CheckButton name="LoreButton11" inherits="SpellButtonTemplate" id="6">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton9" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton9" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="0" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="SpellButton12" inherits="SpellButtonTemplate" id="12">
+      <CheckButton name="LoreButton12" inherits="SpellButtonTemplate" id="12">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="SpellButton11">
+          <Anchor point="TOPLEFT" relativeTo="LoreButton11">
             <Offset>
               <AbsDimension x="157" y="0"/>
             </Offset>
