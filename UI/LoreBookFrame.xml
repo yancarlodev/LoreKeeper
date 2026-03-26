@@ -265,7 +265,7 @@
         </Anchors>
       </CheckButton>
     </Frames>
-    <!-- <Scripts>
+    <Scripts>
       <OnLoad>
         SpellBookFrame_OnLoad();
       </OnLoad>
@@ -278,6 +278,6 @@
       <OnHide>
         SpellBookFrame_OnHide();
       </OnHide>
-    </Scripts> -->
+    </Scripts>
   </Frame>
 </Ui>
