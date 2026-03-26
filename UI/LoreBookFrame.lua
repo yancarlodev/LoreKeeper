@@ -9,38 +9,22 @@ MAX_SKILLLINE_TABS = 8;
 SPELLS_PER_PAGE = 12;
 MAX_SPELL_PAGES = ceil(MAX_SPELLS / SPELLS_PER_PAGE);
 BOOKTYPE_SPELL = "spell";
-BOOKTYPE_PET = "pet";
 SPELLBOOK_PAGENUMBERS = {};
  
 function ToggleSpellBook(bookType)
   local doToggle = 1;
-  -- If has no pet spells and is trying to open the corresponding book, then do nothing
-  if ( not HasPetSpells() and bookType == BOOKTYPE_PET ) then
-    doToggle = nil;
+
+  local isVisible = SpellBookFrame:IsVisible();
+  HideUIPanel(SpellBookFrame);
+  if ( (not isVisible or (SpellBookFrame.bookType ~= bookType)) ) then
+    SpellBookFrame.bookType = bookType;
+    ShowUIPanel(SpellBookFrame);
   end
-  if ( doToggle ) then
-    local isVisible = SpellBookFrame:IsVisible();
-    HideUIPanel(SpellBookFrame);
-    if ( (not isVisible or (SpellBookFrame.bookType ~= bookType)) ) then
-      SpellBookFrame.bookType = bookType;
-      ShowUIPanel(SpellBookFrame);
-    end
-    local currentPage, maxPages = SpellBook_GetCurrentPage();
-    if ( currentPage > maxPages ) then
-      SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] = maxPages;
-      currentPage = maxPages;
-      UpdateSpells();
-      if ( currentPage == 1 ) then
-        SpellBookPrevPageButton:Disable();
-      else
-        SpellBookPrevPageButton:Enable();
-      end
-      if ( currentPage == maxPages ) then
-        SpellBookNextPageButton:Disable();
-      else
-        SpellBookNextPageButton:Enable();
-      end
-    end
+  local currentPage, maxPages = SpellBook_GetCurrentPage();
+  if ( currentPage > maxPages ) then
+    SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] = maxPages;
+    currentPage = maxPages;
+    UpdateSpells();
     if ( currentPage == 1 ) then
       SpellBookPrevPageButton:Disable();
     else
@@ -51,8 +35,18 @@ function ToggleSpellBook(bookType)
     else
       SpellBookNextPageButton:Enable();
     end
-    SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
   end
+  if ( currentPage == 1 ) then
+    SpellBookPrevPageButton:Disable();
+  else
+    SpellBookPrevPageButton:Enable();
+  end
+  if ( currentPage == maxPages ) then
+    SpellBookNextPageButton:Disable();
+  else
+    SpellBookNextPageButton:Enable();
+  end
+  SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
 end
  
 function SpellBookFrame_OnLoad()
@@ -69,7 +63,6 @@ function SpellBookFrame_OnLoad()
   SPELLBOOK_PAGENUMBERS[6] = 1;
   SPELLBOOK_PAGENUMBERS[7] = 1;
   SPELLBOOK_PAGENUMBERS[8] = 1;
-  SPELLBOOK_PAGENUMBERS["pet"] = 1;
   
   -- Set to the first tab by default
   SpellBookSkillLineTab_OnClick(1);
@@ -86,14 +79,10 @@ function SpellBookFrame_OnEvent()
     end
   elseif ( event == "LEARNED_SPELL_IN_TAB" ) then
     local flashFrame = getglobal("SpellBookSkillLineTab"..arg1.."Flash");
-    if ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
-      return;
-    else
       if ( flashFrame ) then
         flashFrame:Show();
         SpellBookFrame.flashTabs = 1;
       end
-    end
   end
 end
  
@@ -143,43 +132,18 @@ function SpellBookFrame_Update(showing)
       skillLineTab:Hide();
     end
   end
- 
-  -- Setup tabs
-  local hasPetSpells, petToken = HasPetSpells();
-  SpellBookFrame.petTitle = nil;
-  if ( hasPetSpells ) then
-    SpellBookFrame_SetTabType(SpellBookFrameTabButton1, BOOKTYPE_SPELL);
-    SpellBookFrame_SetTabType(SpellBookFrameTabButton2, BOOKTYPE_PET, petToken);
-  elseif ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
-    -- if has no pet spells but trying to show the pet spellbook close the window;
-    HideUIPanel(SpellBookFrame);
-    SpellBookFrame.bookType = BOOKTYPE_SPELL;
-  end
-  if ( SpellBookFrame.bookType == BOOKTYPE_SPELL ) then
-    SpellBookTitleText:SetText(TEXT(SPELLBOOK));
-    if ( showing ) then
-      PlaySound("igSpellBookOpen");
-    end
-  else
-    SpellBookTitleText:SetText(SpellBookFrame.petTitle);
-    -- Need to change to pet book open sound
-    if ( showing ) then
-      PlaySound("igAbilityOpen");
-    end
+
+  SpellBookTitleText:SetText(TEXT(SPELLBOOK));
+  if ( showing ) then
+    PlaySound("igSpellBookOpen");
   end
 end
  
 function SpellBookFrame_SetTabType(tabButton, bookType, token)
-  if ( bookType == BOOKTYPE_SPELL ) then
-    tabButton.bookType = BOOKTYPE_SPELL;
-    tabButton:SetText(TEXT(SPELLBOOK));
-    tabButton.binding = "TOGGLESPELLBOOK";
-  else
-    tabButton.bookType = BOOKTYPE_PET;
-    tabButton:SetText(TEXT(getglobal("PET_TYPE_"..token)));
-    tabButton.binding = "TOGGLEPETBOOK";
-    SpellBookFrame.petTitle = TEXT(getglobal("PET_TYPE_"..token));
-  end
+  tabButton.bookType = BOOKTYPE_SPELL;
+  tabButton:SetText(TEXT(SPELLBOOK));
+  tabButton.binding = "TOGGLESPELLBOOK";
+
   if ( SpellBookFrame.bookType == bookType ) then
     tabButton:Disable();
   else
@@ -190,12 +154,8 @@ end
  
  
 function SpellBookFrame_OnHide()
-  if ( this.bookType == BOOKTYPE_SPELL ) then
-    PlaySound("igSpellBookClose");
-  else
-    -- Need to change to pet book close sound
-    PlaySound("igAbilityClose");
-  end
+  PlaySound("igSpellBookClose");
+
   UpdateMicroButtons();
  
   -- Stop the flash frame from flashing if its still flashing.. flash flash flash
@@ -217,7 +177,6 @@ function SpellButton_OnLoad()
   this:RegisterEvent("CRAFT_CLOSE");
   this:RegisterEvent("TRADE_SKILL_SHOW");
   this:RegisterEvent("TRADE_SKILL_CLOSE");
-  this:RegisterEvent("PET_BAR_UPDATE");
   this:RegisterForDrag("LeftButton");
   this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
   SpellButton_UpdateButton();
@@ -230,10 +189,6 @@ function SpellButton_OnEvent(event)
     SpellButton_UpdateSelection();
   elseif ( event == "CRAFT_SHOW" or event == "CRAFT_CLOSE" or event == "TRADE_SKILL_SHOW" or event == "TRADE_SKILL_CLOSE" ) then
     SpellButton_UpdateSelection();
-  elseif ( event == "PET_BAR_UPDATE" ) then
-    if ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
-      SpellButton_UpdateButton();
-    end
   end
  
 end
@@ -287,8 +242,6 @@ function SpellButton_OnClick(drag)
     else
       PickupSpell(id, SpellBookFrame.bookType );
     end
-  elseif ( arg1 ~= "LeftButton" and SpellBookFrame.bookType == BOOKTYPE_PET ) then
-    ToggleSpellAutocast(id, SpellBookFrame.bookType);
   else
     CastSpell(id, SpellBookFrame.bookType);
     SpellButton_UpdateSelection();
@@ -298,7 +251,7 @@ end
 function SpellButton_UpdateSelection()
   local temp, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   local id = SpellBook_GetSpellID(this:GetID());
-  if ( (SpellBookFrame.bookType ~= BOOKTYPE_PET) and (id > (offset + numSpells)) ) then
+  if ( (id > (offset + numSpells)) ) then
     this:SetChecked("false");
     return;
   end
@@ -331,7 +284,7 @@ function SpellButton_UpdateButton()
   local cooldown = getglobal(name.."Cooldown");
   local autoCastableTexture = getglobal(name.."AutoCastable");
   local autoCastModel = getglobal(name.."AutoCast");
-  if ( (SpellBookFrame.bookType ~= BOOKTYPE_PET) and (id > (offset + numSpells)) ) then
+  if ( (id > (offset + numSpells)) ) then
     this:Disable();
     iconTexture:Hide();
     spellString:Hide();
@@ -415,13 +368,8 @@ function PrevPageButton_OnClick()
   SpellBook_UpdatePageArrows();
   SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
   UpdateSpells();
-  if ( SpellBookFrame.bookType == BOOKTYPE_SPELL ) then
-    PlaySound("igAbiliityPageTurn");
-  else
-    SpellBookTitleText:SetText(SpellBookFrame.petTitle);
-    -- Need to change to pet book pageturn sound
-    PlaySound("igAbiliityPageTurn");
-  end
+
+  PlaySound("igAbiliityPageTurn");
 end
  
 function NextPageButton_OnClick()
@@ -430,13 +378,8 @@ function NextPageButton_OnClick()
   SpellBook_UpdatePageArrows();
   SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), pageNum));
   UpdateSpells();
-  if ( SpellBookFrame.bookType == BOOKTYPE_SPELL ) then
-    PlaySound("igAbiliityPageTurn");
-  else
-    SpellBookTitleText:SetText(SpellBookFrame.petTitle);
-    -- Need to change to pet book pageturn sound
-    PlaySound("igAbiliityPageTurn");
-  end
+
+  PlaySound("igAbiliityPageTurn");
 end
  
 function SpellBookSkillLineTab_OnClick(id)
@@ -463,11 +406,7 @@ function SpellBookSkillLineTab_OnClick(id)
 end
  
 function SpellBook_GetSpellID(id)
-  if ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
-    return id;
-  else
-    return id + SpellBookFrame.selectedSkillLineOffset + ( SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] - 1));
-  end
+  return id + SpellBookFrame.selectedSkillLineOffset + ( SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] - 1));
 end
  
 function SpellBook_UpdatePageArrows()
@@ -486,14 +425,10 @@ end
  
 function SpellBook_GetCurrentPage()
   local currentPage, maxPages;
-  local numPetSpells = HasPetSpells();
-  if ( numPetSpells and SpellBookFrame.bookType == BOOKTYPE_PET ) then
-    currentPage = SPELLBOOK_PAGENUMBERS["pet"];
-    maxPages = ceil(numPetSpells/SPELLS_PER_PAGE);
-  else
-    currentPage = SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine];
-    local name, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
-    maxPages = ceil(numSpells/SPELLS_PER_PAGE);
-  end
+
+  currentPage = SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine];
+  local name, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  maxPages = ceil(numSpells/SPELLS_PER_PAGE);
+
   return currentPage, maxPages;
 end
