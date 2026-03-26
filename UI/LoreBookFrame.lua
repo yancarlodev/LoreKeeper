@@ -12,8 +12,6 @@ BOOKTYPE_SPELL = "spell";
 SPELLBOOK_PAGENUMBERS = {};
  
 function ToggleSpellBook(bookType)
-  local doToggle = 1;
-
   local isVisible = SpellBookFrame:IsVisible();
   HideUIPanel(SpellBookFrame);
   if ( (not isVisible or (SpellBookFrame.bookType ~= bookType)) ) then
@@ -112,12 +110,12 @@ function SpellBookFrame_Update(showing)
   end
  
   local numSkillLineTabs = GetNumSpellTabs();
-  local name, texture, offset, numSpells;
+  local name, texture;
   local skillLineTab;
   for i=1, MAX_SKILLLINE_TABS do
     skillLineTab = getglobal("SpellBookSkillLineTab"..i);
     if ( i <= numSkillLineTabs and SpellBookFrame.bookType == BOOKTYPE_SPELL ) then
-      name, texture, offset, numSpells = GetSpellTabInfo(i);
+      name, texture = GetSpellTabInfo(i);
       skillLineTab:SetNormalTexture(texture);
       skillLineTab.tooltip = name;
       skillLineTab:Show();
@@ -194,7 +192,6 @@ function SpellButton_OnEvent(event)
 end
  
 function SpellButton_OnEnter()
-  local name, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   local id = SpellBook_GetSpellID(this:GetID());
   GameTooltip:SetOwner(this, "ANCHOR_RIGHT");
   if ( GameTooltip:SetSpell(id, SpellBookFrame.bookType) ) then
@@ -249,7 +246,7 @@ function SpellButton_OnClick(drag)
 end
  
 function SpellButton_UpdateSelection()
-  local temp, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   local id = SpellBook_GetSpellID(this:GetID());
   if ( (id > (offset + numSpells)) ) then
     this:SetChecked("false");
@@ -274,7 +271,7 @@ function SpellButton_UpdateButton()
   if ( not SpellBookFrame.selectedSkillLine ) then
     SpellBookFrame.selectedSkillLine = 1;
   end
-  local temp, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   SpellBookFrame.selectedSkillLineOffset = offset;
   local id = SpellBook_GetSpellID(this:GetID());
   local name = this:GetName();
@@ -389,7 +386,7 @@ function SpellBookSkillLineTab_OnClick(id)
     id = this:GetID();
   end
   SpellBookFrame.selectedSkillLine = id;
-  local name, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  local _, _, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   SpellBookFrame.selectedSkillLineOffset = offset;
   SpellBookFrame.selectedSkillLineNumSpells = numSpells;
   SpellBook_UpdatePageArrows();
@@ -427,7 +424,7 @@ function SpellBook_GetCurrentPage()
   local currentPage, maxPages;
 
   currentPage = SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine];
-  local name, texture, offset, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
+  local _, _, _, numSpells = GetSpellTabInfo(SpellBookFrame.selectedSkillLine);
   maxPages = ceil(numSpells/SPELLS_PER_PAGE);
 
   return currentPage, maxPages;
