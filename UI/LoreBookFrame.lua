@@ -47,7 +47,7 @@ function ToggleSpellBook(bookType)
   SpellBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
 end
  
-function SpellBookFrame_OnLoad()
+function LoreBookFrame_OnLoad()
   this:RegisterEvent("SPELLS_CHANGED");
   this:RegisterEvent("LEARNED_SPELL_IN_TAB");
  
@@ -69,7 +69,7 @@ function SpellBookFrame_OnLoad()
   SpellBookFrame.flashTabs = nil;
 end
  
-function SpellBookFrame_OnEvent()
+function LoreBookFrame_OnEvent()
   if ( event == "SPELLS_CHANGED" ) then
     if ( SpellBookFrame:IsVisible() ) then
       SpellBookFrame_Update();
@@ -84,7 +84,7 @@ function SpellBookFrame_OnEvent()
   end
 end
  
-function SpellBookFrame_OnShow()
+function LoreBookFrame_OnShow()
   UpdateMicroButtons();
   SpellBookFrame_Update(1);
   
@@ -151,7 +151,7 @@ function SpellBookFrame_SetTabType(tabButton, bookType, token)
 end
  
  
-function SpellBookFrame_OnHide()
+function LoreBookFrame_OnHide()
   PlaySound("igSpellBookClose");
 
   UpdateMicroButtons();

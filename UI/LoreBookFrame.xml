@@ -267,16 +267,16 @@
     </Frames>
     <Scripts>
       <OnLoad>
-        SpellBookFrame_OnLoad();
+        LoreBookFrame_OnLoad();
       </OnLoad>
       <OnEvent>
-        SpellBookFrame_OnEvent();
+        LoreBookFrame_OnEvent();
       </OnEvent>
       <OnShow>
-        SpellBookFrame_OnShow();
+        LoreBookFrame_OnShow();
       </OnShow>
       <OnHide>
-        SpellBookFrame_OnHide();
+        LoreBookFrame_OnHide();
       </OnHide>
     </Scripts>
   </Frame>
