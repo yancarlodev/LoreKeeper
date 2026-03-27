@@ -11,7 +11,7 @@ MAX_SPELL_PAGES = ceil(MAX_SPELLS / SPELLS_PER_PAGE);
 BOOKTYPE_SPELL = "spell";
 SPELLBOOK_PAGENUMBERS = {};
  
-function ToggleSpellBook(bookType)
+function ToggleLoreBook(bookType)
   local isVisible = LoreBookFrame:IsVisible();
   HideUIPanel(LoreBookFrame);
   if ( (not isVisible or (LoreBookFrame.bookType ~= bookType)) ) then
