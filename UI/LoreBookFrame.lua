@@ -23,27 +23,8 @@ function ToggleLoreBook(bookType)
     SPELLBOOK_PAGENUMBERS[LoreBookFrame.selectedSkillLine] = maxPages;
     currentPage = maxPages;
     UpdateSpells();
-    if ( currentPage == 1 ) then
-      LoreBookPrevPageButton:Disable();
-    else
-      LoreBookPrevPageButton:Enable();
-    end
-    if ( currentPage == maxPages ) then
-      LoreBookNextPageButton:Disable();
-    else
-      LoreBookNextPageButton:Enable();
-    end
   end
-  if ( currentPage == 1 ) then
-    LoreBookPrevPageButton:Disable();
-  else
-    LoreBookPrevPageButton:Enable();
-  end
-  if ( currentPage == maxPages ) then
-    LoreBookNextPageButton:Disable();
-  else
-    LoreBookNextPageButton:Enable();
-  end
+  SpellBook_UpdatePageArrows()
   LoreBookPageText:SetText(format(TEXT(PAGE_NUMBER), currentPage));
 end
  
@@ -334,6 +315,11 @@ end
  
 function SpellBook_UpdatePageArrows()
   local currentPage, maxPages = SpellBook_GetCurrentPage();
+
+  if ( currentPage > maxPages ) then
+    currentPage = maxPages;
+  end
+
   if ( currentPage== 1 ) then
     LoreBookPrevPageButton:Disable();
   else
