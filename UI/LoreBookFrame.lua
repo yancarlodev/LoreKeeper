@@ -49,18 +49,10 @@ end
  
 function LoreBookFrame_OnLoad()
   this:RegisterEvent("SPELLS_CHANGED");
-  this:RegisterEvent("LEARNED_SPELL_IN_TAB");
  
   LoreBookFrame.bookType = BOOKTYPE_SPELL;
   -- Init page nums
   SPELLBOOK_PAGENUMBERS[1] = 1;
-  SPELLBOOK_PAGENUMBERS[2] = 1;
-  SPELLBOOK_PAGENUMBERS[3] = 1;
-  SPELLBOOK_PAGENUMBERS[4] = 1;
-  SPELLBOOK_PAGENUMBERS[5] = 1;
-  SPELLBOOK_PAGENUMBERS[6] = 1;
-  SPELLBOOK_PAGENUMBERS[7] = 1;
-  SPELLBOOK_PAGENUMBERS[8] = 1;
   
   -- Set to the first tab by default
   SpellBookSkillLineTab_OnClick(1);
@@ -75,96 +67,30 @@ function LoreBookFrame_OnEvent()
       SpellBookFrame_Update();
       SpellBook_UpdatePageArrows();
     end
-  elseif ( event == "LEARNED_SPELL_IN_TAB" ) then
-    local flashFrame = getglobal("SpellBookSkillLineTab"..arg1.."Flash");
-      if ( flashFrame ) then
-        flashFrame:Show();
-        LoreBookFrame.flashTabs = 1;
-      end
   end
 end
  
 function LoreBookFrame_OnShow()
   UpdateMicroButtons();
   SpellBookFrame_Update(1);
-  
-  -- If there are tabs waiting to flash, then flash them... yeah..
-  if ( LoreBookFrame.flashTabs ) then
-    UIFrameFlash(SpellBookTabFlashFrame, 0.5, 0.5, 30, nil);
-  end
- 
-  -- Show multibar slots
-  MultiActionBar_ShowAllGrids();
 end
  
 function SpellBookFrame_Update(showing)
-  -- Hide all tabs
-  SpellBookFrameTabButton1:Hide();
-  SpellBookFrameTabButton2:Hide();
-  SpellBookFrameTabButton3:Hide();
-  
   -- Setup skillline tabs
   if ( showing ) then
     SpellBookSkillLineTab_OnClick(LoreBookFrame.selectedSkillLine);
     UpdateSpells();
   end
- 
-  local numSkillLineTabs = GetNumSpellTabs();
-  local name, texture;
-  local skillLineTab;
-  for i=1, MAX_SKILLLINE_TABS do
-    skillLineTab = getglobal("SpellBookSkillLineTab"..i);
-    if ( i <= numSkillLineTabs and LoreBookFrame.bookType == BOOKTYPE_SPELL ) then
-      name, texture = GetSpellTabInfo(i);
-      skillLineTab:SetNormalTexture(texture);
-      skillLineTab.tooltip = name;
-      skillLineTab:Show();
- 
-      -- Set the selected tab
-      if ( LoreBookFrame.selectedSkillLine == i ) then
-        skillLineTab:SetChecked(1);
-      else
-        skillLineTab:SetChecked(nil);
-      end
-    else
-      skillLineTab:Hide();
-    end
-  end
 
-  LoreBookTitleText:SetText(TEXT(SPELLBOOK));
   if ( showing ) then
     PlaySound("igSpellBookOpen");
   end
 end
  
-function SpellBookFrame_SetTabType(tabButton, bookType, token)
-  tabButton.bookType = BOOKTYPE_SPELL;
-  tabButton:SetText(TEXT(SPELLBOOK));
-  tabButton.binding = "TOGGLESPELLBOOK";
-
-  if ( LoreBookFrame.bookType == bookType ) then
-    tabButton:Disable();
-  else
-    tabButton:Enable();
-  end
-  tabButton:Show();
-end
- 
- 
 function LoreBookFrame_OnHide()
   PlaySound("igSpellBookClose");
 
   UpdateMicroButtons();
- 
-  -- Stop the flash frame from flashing if its still flashing.. flash flash flash
-  UIFrameFlashRemoveFrame(SpellBookTabFlashFrame);
-  -- Hide all the flashing textures
-  for i=1, MAX_SKILLLINE_TABS do
-    getglobal("SpellBookSkillLineTab"..i.."Flash"):Hide();
-  end
- 
-  -- Hide multibar slots
-  MultiActionBar_HideAllGrids();
 end
  
 function SpellButton_OnLoad() 
