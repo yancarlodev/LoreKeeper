@@ -5,35 +5,71 @@ btn:SetText("Transcribe")
 btn:SetPoint("BOTTOMRIGHT", ItemTextFrame, "BOTTOMRIGHT", -61, 76)
 btn:Show()
 
-local function goToFirstPage()
-    while ItemTextGetPage() > 1 do
+local function goToPage(page)
+    if page > ItemTextGetPage() then
+        while ItemTextGetPage() < page do
+            ItemTextNextPage()
+        end
+
+        return
+    end
+
+    while ItemTextGetPage() > page do
         ItemTextPrevPage()
     end
 end
 
 local function scanItemText()
+    local pages = {}
+
     while ItemTextHasNextPage() do
        local pageContent = ItemTextGetText()
-       print(pageContent)
+       table.insert(pages, pageContent)
        ItemTextNextPage()
     end
+
+    return pages
 end
 
-local function returnToInitialPage(initialPage)
-    while ItemTextGetPage() > initialPage do
-        ItemTextPrevPage()
-    end
-end
-
-btn:SetScript("OnClick", function()
+local function transcribeLore()
     local initialPage = ItemTextGetPage()
+
+    goToPage(1)
+
     local title = ItemTextGetItem()
-    print(title)
+    local pages = scanItemText()
 
-    goToFirstPage()
+    LoreKeeperLoreRepo:Save({
+        title = title,
+        bookmark = initialPage,
+        pages = pages
+    })
 
-    scanItemText()
+    goToPage(initialPage)
+end
 
-    returnToInitialPage(initialPage)
-end)
+btn:SetScript("OnClick", transcribeLore)
+
+local function goToBookmark()
+    local title = ItemTextGetItem()
+
+    local lore = LoreKeeperLoreRepo:Get(title)
+
+    if lore == nil then return end
+
+    goToPage(lore.bookmark)
+end
+
+btn:SetScript("onShow", goToBookmark)
+
+local function saveBookmark()
+    local title = ItemTextGetItem()
+    local currentPage = ItemTextGetPage()
+
+    LoreKeeperLoreRepo:Update(title, {
+        bookmark = currentPage
+    })
+end
+
+btn:SetScript("onHide", saveBookmark)
 
