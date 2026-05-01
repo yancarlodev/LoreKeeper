@@ -29,3 +29,7 @@ function LoreKeeperLoreRepo:Get(title)
 
     return LoreKeeperDatabase['Lore'][title]
 end
+
+function LoreKeeperLoreRepo:GetAll()
+    return LoreKeeperDatabase['Lore']
+end

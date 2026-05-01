@@ -167,7 +167,7 @@ function SpellButton_UpdateSelection()
   end
 end
  
-function SpellButton_UpdateButton()
+function LoreButton_UpdateButton()
   if ( not this:IsVisible() ) then
     return;
   end
@@ -185,17 +185,11 @@ function SpellButton_UpdateButton()
   local iconTexture = getglobal(name.."IconTexture");
   local spellString = getglobal(name.."SpellName");
   local subSpellString = getglobal(name.."SubSpellName");
-  local cooldown = getglobal(name.."Cooldown");
-  local autoCastableTexture = getglobal(name.."AutoCastable");
-  local autoCastModel = getglobal(name.."AutoCast");
   if ( (id > (offset + numSpells)) ) then
     this:Disable();
     iconTexture:Hide();
     spellString:Hide();
     subSpellString:Hide();
-    cooldown:Hide();
-    autoCastableTexture:Hide();
-    autoCastModel:Hide();
     this:SetChecked(0);
     getglobal(name.."NormalTexture"):SetVertexColor(1.0, 1.0, 1.0);
     return;
@@ -210,47 +204,18 @@ function SpellButton_UpdateButton()
     iconTexture:Hide();
     spellString:Hide();
     subSpellString:Hide();
-    cooldown:Hide();
-    autoCastableTexture:Hide();
-    autoCastModel:Hide();
     highlightTexture:SetTexture("Interface\\Buttons\\ButtonHilight-Square");
     this:SetChecked(0);
     normalTexture:SetVertexColor(1.0, 1.0, 1.0);
     return;
   end
-  
-  local start, duration, enable = GetSpellCooldown(id, LoreBookFrame.bookType);
-  CooldownFrame_SetTimer(cooldown, start, duration, enable);
-  if ( enable == 1 ) then
-    iconTexture:SetVertexColor(1.0, 1.0, 1.0);
-  else
-    iconTexture:SetVertexColor(0.4, 0.4, 0.4);
-  end
- 
-  local autoCastAllowed, autoCastEnabled = GetSpellAutocast(id, LoreBookFrame.bookType);
-  if ( autoCastAllowed ) then
-    autoCastableTexture:Show();
-  else
-    autoCastableTexture:Hide();
-  end
-  if ( autoCastEnabled ) then
-    autoCastModel:Show();
-  else
-    autoCastModel:Hide();
-  end
  
   local spellName, subSpellName = GetSpellName(id, LoreBookFrame.bookType);
-  local isPassive = IsSpellPassive(id, LoreBookFrame.bookType);
-  if ( isPassive ) then
-    normalTexture:SetVertexColor(0, 0, 0);
-    highlightTexture:SetTexture("Interface\\Buttons\\UI-PassiveHighlight");
-    --subSpellName = TEXT(PASSIVE_PARENS);
-    spellString:SetTextColor(PASSIVE_SPELL_FONT_COLOR.r, PASSIVE_SPELL_FONT_COLOR.g, PASSIVE_SPELL_FONT_COLOR.b);
-  else
-    normalTexture:SetVertexColor(1.0, 1.0, 1.0);
-    highlightTexture:SetTexture("Interface\\Buttons\\ButtonHilight-Square");
-    spellString:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-  end
+
+  normalTexture:SetVertexColor(1.0, 1.0, 1.0);
+  highlightTexture:SetTexture("Interface\\Buttons\\ButtonHilight-Square");
+  spellString:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+
   iconTexture:SetTexture(texture);
   spellString:SetText(spellName);
   subSpellString:SetText(subSpellName);

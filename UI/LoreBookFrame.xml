@@ -164,6 +164,11 @@
             </Offset>
           </Anchor>
         </Anchors>
+        <Scripts>
+          <OnShow>
+            LoreButton_UpdateButton();
+          </OnShow>
+        </Scripts>
       </CheckButton>
       <CheckButton name="LoreButton2" inherits="SpellButtonTemplate" id="7">
         <Anchors>
